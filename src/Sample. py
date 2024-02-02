@@ -1,346 +1,49 @@
-import tkinter
-
 import tkinter as tk
-
-from tkinter import ttk, filedialog
-
-from tkinter.ttk import Progressbar
-
-import tkinter.messagebox
-
-import time
-
-
-
-LARGEFONT = ("Verdana", 35)
-
-
-
-
-
-class TaxReclaimProcess(tk.Tk):
-
-
-
-    def __init__(self, *args, **kwargs):
-
-        tk.Tk.__init__(self, *args, **kwargs)
-
-
-
-        self.win_width = 427
-
-        self.win_height = 250
-
-        self.scr_width = self.winfo_screenwidth()
-
-        self.scr_height = self.winfo_screenheight()
-
-        self.x_axis = (self.scr_width / 2) - (self.win_width / 2)
-
-        self.y_axis = (self.scr_height / 2) - (self.win_height / 2)
-
-
-
-        self.geometry(
-
-            "%dx%d+%d+%d" % (self.win_width, self.win_height, self.x_axis, self.y_axis))
-
-        container = tk.Frame(self, width=427, height=241)
-
-        container.pack(side="top", fill="both", expand=True)
-
-
-
-        container.grid_rowconfigure(0, weight=1)
-
-        container.grid_columnconfigure(0, weight=1)
-
-        self.frames = {}
-
-
-
-        for F in (HomePage, TaxCountryList, JsonFile):
-
-            frame = F(container, self)
-
-
-
-            # for loop
-
-            self.frames[F] = frame
-
-
-
-            frame.grid(row=0, column=0, sticky="nsew")
-
-
-
-        self.show_frame(HomePage)
-
-
-
-    def show_frame(self, cont):
-
-        frame = self.frames[cont]
-
-        frame.tkraise()
-
-
-
-
-
-class HomePage(tk.Frame):
-
-    def __init__(self, parent, controller):
-
-        tk.Frame.__init__(self, parent)
-
-
-
-
-
-        self.progress = None
-
-        l3 = tkinter.Label(self, text='Upload Excel File: ', fg='#483D8B')
-
-        l3.place(x=10, y=90)
-
-
-
-        self.upload_path_var = tkinter.StringVar()
-
-        entry_box = tkinter.Entry(self, width=50, textvariable=self.upload_path_var)
-
-        entry_box.place(x=30, y=120)  # Adjust the coordinates as needed
-
-
-
-        b3 = tkinter.Button(self, width=10, height=1, text='Browse', command=self.browse_file, border=0, fg="white",
-
-                            bg='#483D8B')
-
-        b3.place(x=340, y=120)
-
-
-
-        s = ttk.Style()
-
-        s.theme_use('clam')
-
-        s.configure("red.Horizontal.TProgressbar", foreground='red', background='#4f4f4f')
-
-        self.progress = Progressbar(self, style="red.Horizontal.TProgressbar", orient='horizontal', length=500,
-
-                                    mode='determinate')
-
-        self.progress.place(x=-10, y=235)
-
-        self.create_widgets()
-
-
-
-        # button1 = ttk.Button(self, text="TaxCountryList",
-
-        #                      command=lambda: controller.show_frame(TaxCountryList))
-
-        #
-
-        # button1.grid(row=1, column=1, padx=10, pady=10)
-
-        #
-
-        button2 = ttk.Button(self, text="JsonFile",
-
-                             command=lambda: controller.show_frame(JsonFile))
-
-
-
-        button2.grid(row=2, column=1, padx=10, pady=10)
-
-
-
-    def browse_file(self):
-
-        file_path = filedialog.askopenfilename(title="Select a File")
-
-        if file_path:
-
-            self.upload_path_var.set(file_path)
-
-
-
-    def onClick(self):
-
-        l4 = tkinter.Label(self, text='Processing.....', fg='white')
-
-        l4.config(font=('Calibri (Body)', 10))
-
-        l4.place(x=18, y=210)
-
-
-
-        count = 0
-
-        for i in range(100):
-
-            self.progress['value'] = count
-
-            self.update_idletasks()
-
-            time.sleep(0.03)
-
-            count += 1
-
-        total_stocks = 5
-
-        status = False
-
-        if status:
-
-            tkinter.messagebox.showinfo("Success.",
-
-                                        f'{total_stocks} stocks data updated successfully',
-
-                                        icon=tkinter.messagebox.INFO)
-
-        else:
-
-            tkinter.messagebox.showinfo("Failure.",
-
-                                        "There was error processing your request. Please try again later")
-
-
-
-    def create_widgets(self):
-
-        self.progress.place(x=-10, y=235)
-
-
-
-        b1 = tkinter.Button(self, width=10, height=1, text='Clear',  border=0, fg="white",
-
-                            bg='#CD6600')
-
-        b1.place(x=230, y=200)
-
-
-
-        b2 = tkinter.Button(self, width=10, height=1, text='Submit', command=self.onClick,border=0, fg="white", bg='#556B2F')
-
-
-
-        b2.place(x=330, y=200)
-
-
-
-        l1 = tkinter.Label(self, text='TAX RECLAIM', fg='black')
-
-        l1.config(font=('Calibri (Body)', 18, 'bold'))
-
-        l1.place(x=100, y=10)
-
-
-
-        l3 = tkinter.Label(self, text='PROCESS', fg='black')
-
-        l3.config(font=('Calibri (Body)', 13))
-
-        l3.place(x=110, y=40)
-
-
-
-        l4 = tkinter.Label(self, text='Upload Excel File: ', fg='#483D8B')
-
-        l4.config(font=('Calibri (Body)', 9, 'bold'))
-
-        l4.place(x=10, y=90)
-
-
-
-
-
-# second window frame page1
-
-class TaxCountryList(tk.Frame):
-
-
-
-    def __init__(self, parent, controller):
-
-        tk.Frame.__init__(self, parent)
-
-        label = ttk.Label(self, text="TaxCountryList", font=LARGEFONT)
-
-        label.grid(row=0, column=4, padx=10, pady=10)
-
-
-
-        # button to show frame 2 with text
-
-        # layout2
-
-        button1 = ttk.Button(self, text="HomePage",
-
-                             command=lambda: controller.show_frame(HomePage))
-
-
-
-        button1.grid(row=1, column=1, padx=10, pady=10)
-
-
-
-        button2 = ttk.Button(self, text="JsonFile",
-
-                             command=lambda: controller.show_frame(JsonFile))
-
-
-
-        button2.grid(row=2, column=1, padx=10, pady=10)
-
-
-
-
-
-# third window frame page2
-
-class JsonFile(tk.Frame):
-
-    def __init__(self, parent, controller):
-
-        tk.Frame.__init__(self, parent)
-
-        label = ttk.Label(self, text="JsonFile", font=LARGEFONT)
-
-        label.grid(row=0, column=4, padx=10, pady=10)
-
-
-
-        button1 = ttk.Button(self, text="TaxCountryList",
-
-                             command=lambda: controller.show_frame(TaxCountryList))
-
-
-
-        button1.grid(row=1, column=1, padx=10, pady=10)
-
-
-
-        button2 = ttk.Button(self, text="HomePage",
-
-                             command=lambda: controller.show_frame(HomePage))
-
-
-
-        button2.grid(row=2, column=1, padx=10, pady=10)
-
-
-
-
-
-# Driver Code
-
-app = TaxReclaimProcess()
-
-app.mainloop()
-
+from tkinter import ttk
+
+def on_edit_click():
+    selected_item = treeview.focus()
+    if selected_item:
+        # Perform edit action based on the selected item
+        print("Edit:", treeview.item(selected_item)['values'])
+
+def on_delete_click():
+    selected_item = treeview.focus()
+    if selected_item:
+        # Perform delete action based on the selected item
+        treeview.delete(selected_item)
+
+# Create main window
+root = tk.Tk()
+root.title("Data Display with Edit/Delete Icons")
+
+# Create Treeview
+columns = ("Name", "Age", "Action")
+treeview = ttk.Treeview(root, columns=columns, show="headings")
+treeview.heading("Name", text="Name")
+treeview.heading("Age", text="Age")
+treeview.heading("Action", text="Action")
+
+# Add sample data
+data = [("John", 25), ("Jane", 30), ("Bob", 22)]
+for item in data:
+    treeview.insert("", "end", values=item)
+
+# Add Edit and Delete icons
+edit_icon = tk.PhotoImage(file="edit_icon.png")  # Provide the path to your edit icon image
+delete_icon = tk.PhotoImage(file="delete_icon.png")  # Provide the path to your delete icon image
+
+treeview.column("Action", width=100, anchor="center")
+treeview.tag_configure("editable", image=edit_icon)
+treeview.tag_configure("deletable", image=delete_icon)
+
+for item_id in treeview.get_children():
+    treeview.item(item_id, tags=("editable", "deletable"))
+
+# Bind events for Edit and Delete clicks
+treeview.bind("<Double-1>", lambda event: on_edit_click())
+treeview.bind("<Delete>", lambda event: on_delete_click())
+
+treeview.pack(pady=10)
+
+root.mainloop()
